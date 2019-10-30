@@ -105,14 +105,17 @@ main .replacable {
   color: #66d9e8;
 }
 
-main .inputs-container label {
+main .input-group {
   margin-top: 16px;
-  display: block;
-  color: #f8f9fa;
 }
 
-main .inputs-container label:first-of-type {
+main .input-group:first-of-type {
   margin-top: 0;
+}
+
+main .inputs-container label {
+  display: block;
+  color: #f8f9fa;
 }
 
 main .inputs-container input {
