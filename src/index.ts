@@ -7,6 +7,7 @@ import {
   extractShortcodes,
   replaceShortCodes,
   getPrettyShortcodeKey,
+  generateShortcodesMarkup,
   Shortcode,
 } from './utils/shortcodes';
 
@@ -16,13 +17,15 @@ versionEl.innerText = 'v' + settings.version;
 title.appendChild(versionEl);
 
 const result = document.querySelector('main p');
-const resultDefaultText = result.innerHTML;
+const resultDefaultText = generateShortcodesMarkup(result.innerHTML);
 
 const shortcodes: Shortcode[] = extractShortcodes(resultDefaultText);
 
 const renderResult = () => {
   result.innerHTML = replaceShortCodes(resultDefaultText, shortcodes);
 };
+
+renderResult();
 
 const inputGroups: HTMLElement[] = shortcodes.map(shortcode => {
   const wrapper = document.createElement('div');

@@ -11,6 +11,15 @@ export const extractShortcodes = (string: string): Shortcode[] => {
   }));
 };
 
+export const generateShortcodesMarkup = (string: string): string => {
+  const shortcodes = extractShortcodes(string).map(shortcode => ({
+    ...shortcode,
+    value: '<span class="shortcode">' + shortcode.defaultValue + '</span>',
+  }));
+
+  return replaceShortCodes(string, shortcodes);
+};
+
 export const replaceShortCode = (string: string, shortcode: Shortcode): string => {
   return string.replace(
     shortcode.key,
