@@ -50,11 +50,16 @@ const sidebarSections: HTMLElement[] = templates.map((template, index) => {
   return section;
 });
 
-const renderSection = () => {
-  const defaultText = generateShortcodesMarkup(templates[selectedTemplateIndex].body);
+const texts: string[] = templates.map(template => {
+  return template.body;
+});
+
+const renderContent = () => {
+  const contentEl: HTMLElement = document.querySelector('main .content');
+  const defaultText = generateShortcodesMarkup(texts[selectedTemplateIndex]);
   const shortcodes: Shortcode[] = extractShortcodes(defaultText);
 
-  document.querySelector('main .content').innerHTML = defaultText;
+  contentEl.innerHTML = defaultText;
 
   document.querySelector('.inputs-container').innerHTML = '';
 
@@ -79,10 +84,7 @@ const renderSection = () => {
   });
 
   const renderResult = () => {
-    document.querySelector('main .content').innerHTML = replaceShortCodes(
-      defaultText,
-      shortcodes
-    );
+    contentEl.innerHTML = replaceShortCodes(defaultText, shortcodes);
   };
 
   inputGroups
@@ -96,9 +98,21 @@ const renderSection = () => {
         renderResult();
       });
     });
+
+  contentEl.contentEditable = 'true';
+  contentEl.addEventListener('click', () => {
+    contentEl.className = 'content active';
+  });
+  contentEl.addEventListener('input', e => {
+    texts[selectedTemplateIndex] = contentEl.innerHTML;
+  });
+  contentEl.addEventListener('blur', () => {
+    renderContent();
+    contentEl.className = 'content';
+  });
 };
 
-renderSection();
+renderContent();
 
 sidebarSections.forEach((sidebarSection, index) => {
   document.querySelector('aside').appendChild(sidebarSection);
@@ -110,7 +124,7 @@ sidebarSections.forEach((sidebarSection, index) => {
       } else {
         sidebarSection.className = '';
       }
-      renderSection();
+      renderContent();
     });
   });
 });

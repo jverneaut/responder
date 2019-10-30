@@ -184,4 +184,9 @@ main .inputs-container input:focus {
   border-radius: 2px;
   padding: 40px;
   border: 1px solid #495057;
+  outline: none;
+}
+
+.content.active {
+  border-color: #66d9e8;
 }
