@@ -3,6 +3,13 @@ import './style.css';
 
 import * as settings from '../package.json';
 
+import {
+  extractShortcodes,
+  replaceShortCodes,
+  getPrettyShortcodeKey,
+  Shortcode,
+} from './utils/shortcodes';
+
 const title = document.querySelector('nav h1');
 const versionEl = document.createElement('span');
 versionEl.innerText = 'v' + settings.version;
@@ -11,29 +18,21 @@ title.appendChild(versionEl);
 const result = document.querySelector('main p');
 const resultDefaultText = result.innerHTML;
 
-const words = resultDefaultText.match(/\[(.*?)\]/g).map(word => ({
-  key: word.slice(1, word.length - 1),
-  value: word,
-  default: word,
-}));
+const shortcodes: Shortcode[] = extractShortcodes(resultDefaultText);
 
 const renderResult = () => {
-  let resultText = resultDefaultText;
-  words.forEach(({ key, value }) => {
-    resultText = resultText.replace('[' + key + ']', value);
-  });
-  result.innerHTML = resultText;
+  result.innerHTML = replaceShortCodes(resultDefaultText, shortcodes);
 };
 
-const inputGroups = words.map(({ key, value }) => {
+const inputGroups: HTMLElement[] = shortcodes.map(shortcode => {
   const wrapper = document.createElement('div');
   const label = document.createElement('label');
   const input = document.createElement('input');
 
   wrapper.className = 'input-group';
-  input.name = key;
-  input.placeholder = value;
-  label.innerText = key.charAt(0).toUpperCase() + key.slice(1);
+  input.name = shortcode.key;
+  input.placeholder = shortcode.key;
+  label.innerText = getPrettyShortcodeKey(shortcode);
 
   wrapper.appendChild(label);
   wrapper.appendChild(input);
@@ -48,12 +47,11 @@ inputGroups.forEach(inputGroup => {
 inputGroups
   .map(inputGroup => inputGroup.querySelector('input'))
   .forEach(inputElement => {
-    const targetElemnt = inputElement;
-    const wordToReplace = words.filter(({ key }) => key === targetElemnt.name)[0];
-
+    const targetShortocde = shortcodes.filter(
+      shortcode => shortcode.key === inputElement.name
+    )[0];
     inputElement.addEventListener('input', e => {
-      wordToReplace.value =
-        targetElemnt.value.trim() === '' ? wordToReplace.default : targetElemnt.value;
+      targetShortocde.value = inputElement.value;
       renderResult();
     });
   });
