@@ -1,12 +1,20 @@
 import './reset.css';
 import './style.css';
 
+import * as settings from '../package.json';
+
+const title = document.querySelector('nav h1');
+const versionEl = document.createElement('span');
+versionEl.innerText = 'v' + settings.version;
+title.appendChild(versionEl);
+
 const result = document.querySelector('main p');
 const resultDefaultText = result.innerHTML;
 
 const words = resultDefaultText.match(/\[(.*?)\]/g).map(word => ({
   key: word.slice(1, word.length - 1),
   value: word,
+  default: word,
 }));
 
 const renderResult = () => {
@@ -24,6 +32,7 @@ const inputGroups = words.map(({ key, value }) => {
 
   wrapper.className = 'input-group';
   input.name = key;
+  input.placeholder = value;
   label.innerText = key.charAt(0).toUpperCase() + key.slice(1);
 
   wrapper.appendChild(label);
@@ -40,10 +49,11 @@ inputGroups
   .map(inputGroup => inputGroup.querySelector('input'))
   .forEach(inputElement => {
     const targetElemnt = inputElement;
-    const wordToReplace = targetElemnt.name;
+    const wordToReplace = words.filter(({ key }) => key === targetElemnt.name)[0];
 
     inputElement.addEventListener('input', e => {
-      words.filter(({ key }) => key === wordToReplace)[0].value = targetElemnt.value;
+      wordToReplace.value =
+        targetElemnt.value.trim() === '' ? wordToReplace.default : targetElemnt.value;
       renderResult();
     });
   });
