@@ -78,7 +78,7 @@ aside section header {
   font-weight: bold;
 }
 
-aside section p {
+aside section div {
   width: 100%;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -89,6 +89,19 @@ aside section p {
 aside section footer {
   margin-top: 12px;
   font-size: 0;
+}
+
+aside section footer {
+  width: 100%;
+}
+
+aside section footer ul {
+  white-space: nowrap;
+  overflow-x: scroll;
+}
+
+aside section footer ul::-webkit-scrollbar {
+  width: 0 !important;
 }
 
 aside section footer ul li {
